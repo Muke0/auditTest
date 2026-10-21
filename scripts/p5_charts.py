@@ -47,7 +47,7 @@ labels = ["≤0", "0–15", "15–30", "30–45", "45–60", ">60"]
 df["bkt"] = pd.cut(df["lag"], bins=bins, labels=labels)
 g = df.groupby("bkt", observed=True).agg(条数=("audit_id", "count"), 失败=("is_fail", "sum"))
 g["失败率%"] = g["失败"] / g["条数"] * 100
-baseline = df[df["lag"].between(0, 15)]["is_fail"].mean() * 100
+baseline = df[(df["lag"] > 0) & (df["lag"] <= 15)]["is_fail"].mean() * 100
 
 fig, ax = plt.subplots(figsize=(7, 4), dpi=150)
 x = range(len(g))

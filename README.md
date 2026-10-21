@@ -8,6 +8,8 @@
 
 数据是 `audit_records.csv`（1268 条稽核流水）。先把 `audit_time` 和 `voucher_synced_at` 转为同一时区（+08:00），再统计 `audit_result` 和其他属性之间是否有联系。
 
+> **数据说明**：本分析仅使用题目发放的 `audit_records.csv`，未补造任何数据；文中所有数字均可由 `scripts/` 下的脚本复现。
+
 `audit_result` 分布：
 
 | audit_result | 含义 | 条数 | 占比 |
@@ -70,15 +72,22 @@
 
 ## 四、可复现脚本
 
-依赖：Python 3 + pandas。
+依赖：Python 3 + pandas + numpy + matplotlib。
 
 ```bash
-pip install pandas
+pip install pandas numpy matplotlib
 
+# 核心分析（30 分钟内）
 python scripts/convert_timezone.py     # 生成 audit_records_processed.csv（统一时区）
 python scripts/analyze_bottleneck.py   # 失败分布 + 滞后按结果分组对比
 python scripts/analyze_bottleneck2.py  # 失败率(带分母) + 滞后单调性 + 机构/大类控制
 python scripts/analyze_credit_roi.py   # credit/金额验证 + ROI 测算
+
+# 后续迭代（见「六、改进记录」）
+python scripts/optimize_p1_threshold.py      # P1：credit/tax 阈值优化（结论不可行）
+python scripts/p4_model.py                   # P4：逻辑回归拦截模型（结论无需模型）
+python scripts/p5_negative_lag_robustness.py # P5：负滞后排查 + 稳健性
+python scripts/p5_charts.py                  # P5：生成 3 张图到 figures/
 ```
 
 ## 五、后续迭代方向（收益 / 成本 / 优先级）
