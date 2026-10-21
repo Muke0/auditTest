@@ -61,7 +61,7 @@ print()
 print("=" * 80)
 print("E. ROI：按「滞后>阈值即先同步(10min)」测算净节省")
 print("=" * 80)
-BASELINE_FAIL_RATE = df[df["lag"].between(0, 15)]["is_fail"].mean()  # 新鲜数据基准失败率
+BASELINE_FAIL_RATE = df[(df["lag"] > 0) & (df["lag"] <= 15)]["is_fail"].mean()  # 新鲜数据基准失败率(0<lag<=15)
 print(f"新鲜数据(0-15min)基准失败率 = {BASELINE_FAIL_RATE*100:.1f}%")
 print(f"当前失败总数 = {int(df['is_fail'].sum())}，人工成本 = {int(df['is_fail'].sum()) * 75} 分钟")
 print()

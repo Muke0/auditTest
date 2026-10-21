@@ -33,7 +33,7 @@ labels = ["<=0", "0-15", "15-30", "30-45", "45-60", ">60"]
 df["bkt"] = pd.cut(df["lag"], bins=bins, labels=labels)
 g = df.groupby("bkt", observed=True).agg(条数=("audit_id", "count"), 失败=("is_fail", "sum"))
 g["失败率%"] = (g["失败"] / g["条数"] * 100).round(1)
-baseline = df[df["lag"].between(0, 15)]["is_fail"].mean()
+baseline = df[(df["lag"] > 0) & (df["lag"] <= 15)]["is_fail"].mean()
 print(f"基准(新鲜0-15min)失败率 = {baseline*100:.2f}%")
 g["超额失败率(pp)"] = ((g["失败"] / g["条数"] - baseline) * 100).round(1)
 print(g.to_string())
